@@ -2,6 +2,6 @@ version: "3.7"
 services:
   system-info:
     image: xuujie/system-info-reflective:latest
-    container_name: system-info
+    container_name: system-info-reflective
     ports:
       - 8080:8080
