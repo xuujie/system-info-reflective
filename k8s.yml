@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: system-info-reflective
+  labels:
+    app: system-info-reflective
+spec:
+  selector:
+    matchLabels:
+      app: system-info-reflective
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: system-info-reflective
+    spec:
+      containers:
+        - name: system-info-reflective
+          image: xuujie/system-info-reflective:latest
+          env:
+            - name: SPLUNK_HOST
+              value: 17.82.205.168
+          ports:
+            - containerPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: system-info-reflective-service
+spec:
+  selector:
+    app: system-info-reflective
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: system-info-reflective-ingress
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: system-info-reflective-service
+              servicePort: 80
