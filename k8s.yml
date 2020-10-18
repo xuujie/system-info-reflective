@@ -37,20 +37,4 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 8080
-
----
-
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: system-info-reflective-ingress
-  annotations:
-    ingress.kubernetes.io/rewrite-target: /
-spec:
-  rules:
-    - http:
-        paths:
-          - path: /
-            backend:
-              serviceName: system-info-reflective-service
-              servicePort: 80
+  type: LoadBalancer
