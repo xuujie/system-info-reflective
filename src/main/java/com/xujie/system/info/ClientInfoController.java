@@ -25,21 +25,19 @@ public class ClientInfoController {
     }
 
     @GetMapping(produces = "application/json")
-    public Flux<Map<String, String>> client(ServerWebExchange exchange) throws JsonProcessingException {
-        Map<String, String> map = new HashMap<>();
-        map.putAll(clientInfoService.ip(exchange));
-        map.putAll(clientInfoService.clientName(exchange));
-        logger.info("client info: {}", JsonConverter.toJson(map));
-        return Flux.just(map);
+    public Flux<ClientInfo> client(ServerWebExchange exchange) throws JsonProcessingException {
+        ClientInfo clientInfo= clientInfoService.info(exchange);
+        logger.info("client info: {}", JsonConverter.toJson(clientInfo));
+        return Flux.just(clientInfo);
     }
 
-    @GetMapping(value = "/ip", produces = "application/json")
-    public Flux<Map<String, String>> ip(ServerWebExchange exchange) throws JsonProcessingException {
-        return Flux.just(clientInfoService.ip(exchange));
-    }
-
-    @GetMapping(value = "/name", produces = "application/json")
-    public Flux<Map<String, String>> clientName(ServerWebExchange exchange) throws JsonProcessingException {
-        return Flux.just(clientInfoService.clientName(exchange));
-    }
+//    @GetMapping(value = "/ip", produces = "application/json")
+//    public Flux<Map<String, String>> ip(ServerWebExchange exchange) throws JsonProcessingException {
+//        return Flux.just(clientInfoService.ip(exchange));
+//    }
+//
+//    @GetMapping(value = "/name", produces = "application/json")
+//    public Flux<Map<String, String>> clientName(ServerWebExchange exchange) throws JsonProcessingException {
+//        return Flux.just(clientInfoService.clientName(exchange));
+//    }
 }

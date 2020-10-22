@@ -1,33 +1,39 @@
 package com.xujie.system.info;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Flux;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class ClientInfoService {
-    Logger logger = LoggerFactory.getLogger(getClass());
 
-    public Map<String, String> ip(ServerWebExchange exchange) throws JsonProcessingException {
-        Map<String, String> map = new HashMap<>();
-        String clientIp = exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
-        map.put("ip", clientIp);
-        logger.info(JsonConverter.toJson(map));
-        return map;
+    private final ClientInfoRepository clientInfoRepository;
+
+    public ClientInfoService(ClientInfoRepository clientInfoRepository) {
+        this.clientInfoRepository = clientInfoRepository;
     }
 
-    public Map<String, String> clientName(ServerWebExchange exchange) throws JsonProcessingException {
-        Map<String, String> map = new HashMap<>();
-        String clientIp = exchange.getRequest().getRemoteAddress().getHostName();
-        map.put("name", clientIp);
-        logger.info(JsonConverter.toJson(map));
-        return map;
+    public ClientInfo info(ServerWebExchange exchange) throws JsonProcessingException {
+        ClientInfo clientInfo = new ClientInfo();
+
+        clientInfo.setClientName(clientName(exchange));
+        clientInfo.setClientIp(ip(exchange));
+        clientInfo.setAccessTime(new Timestamp(System.currentTimeMillis()));
+        clientInfoRepository.save(clientInfo);
+        return clientInfo;
+    }
+
+    public String ip(ServerWebExchange exchange) throws JsonProcessingException {
+        return exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
+    }
+
+    public String clientName(ServerWebExchange exchange) throws JsonProcessingException {
+        return exchange.getRequest().getRemoteAddress().getHostName();
     }
 }
