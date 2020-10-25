@@ -36,4 +36,8 @@ public class ClientInfoService {
     public String clientName(ServerWebExchange exchange) throws JsonProcessingException {
         return exchange.getRequest().getRemoteAddress().getHostName();
     }
+
+    public long count() {
+        return clientInfoRepository.count();
+    }
 }

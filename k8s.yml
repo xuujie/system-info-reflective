@@ -18,8 +18,20 @@ spec:
         - name: system-info-reflective
           image: xuujie/system-info-reflective:latest
           env:
-            - name: SPLUNK_HOST
-              value: 17.82.205.168
+            - name: SPRING_DATASOURCE_PLATFORM
+              value: mysql
+            - name: SPRING_DATASOURCE_DRIVER-CLASS-NAME
+              value: com.mysql.jdbc.Driver
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: password
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/sysinfo
+            - name: SPRING_JPA_DATABASE-PLATFORM
+              value: org.hibernate.dialect.MySQL5Dialect
+            - name: SPRING_JPA_HIBERNATE_NAMING_PHYSICAL-STRATEGY
+              value: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
           ports:
             - containerPort: 8080
 
