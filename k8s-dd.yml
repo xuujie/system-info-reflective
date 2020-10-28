@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: system-info-reflective
+  labels:
+    app: system-info-reflective
+    tags.datadoghq.com/env: "production"
+    tags.datadoghq.com/service: "system-info"
+    tags.datadoghq.com/version: "0.01"
+spec:
+  selector:
+    matchLabels:
+      app: system-info-reflective
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: system-info-reflective
+    spec:
+      containers:
+        - name: system-info-reflective
+          image: xuujie/system-info-reflective:latest
+          env:
+            - name: SPRING_DATASOURCE_PLATFORM
+              value: mysql
+            - name: SPRING_DATASOURCE_DRIVER-CLASS-NAME
+              value: com.mysql.jdbc.Driver
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: password
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/sysinfo
+            - name: SPRING_JPA_DATABASE-PLATFORM
+              value: org.hibernate.dialect.MySQL5Dialect
+            - name: SPRING_JPA_HIBERNATE_NAMING_PHYSICAL-STRATEGY
+              value: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DD_ENV
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/env']
+            - name: DD_SERVICE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/service']
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['tags.datadoghq.com/version']
+            - name: DD_PROFILING_ENABLED
+              value: "true"
+            - name: DD_LOGS_INJECTION
+              value: "true"
+            - name: DD_TRACE_SAMPLE_RATE
+              value: "1"
+          ports:
+            - containerPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: system-info-reflective-service
+spec:
+  selector:
+    app: system-info-reflective
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
