@@ -1,9 +1,9 @@
 plugins {
-	id 'org.springframework.boot' version '2.2.0.RELEASE'
-	id 'java'
+	id "java"
+	id "org.springframework.boot" version "2.2.6.RELEASE"
+	id "io.spring.dependency-management" version "1.0.9.RELEASE"
+	id "io.freefair.lombok" version "5.3.0"
 }
-
-apply plugin: 'io.spring.dependency-management'
 
 group = 'com.xujie'
 version = '0.0.1-SNAPSHOT'
@@ -22,11 +22,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'com.h2database:h2'
-	implementation 'mysql:mysql-connector-java:5.1.49'
 
 
-	implementation 'com.splunk.logging:splunk-library-javalogging:1.6.2'
-	implementation 'io.micrometer:micrometer-registry-prometheus'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
